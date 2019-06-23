@@ -57,6 +57,9 @@ int modeAl; //0 == FCFS 1 == prioridade
 
                       Add internal helper functions here.
 ********************************************************************************/
+thread_t* prioSelect();
+
+
 // OK
 // insercao do ponteiro para thread *aux em uma lista
 // encadeada funcionando como uma fila
@@ -94,8 +97,8 @@ thread_t* getFromReady(){
       }
 
     }else{ //Prioridade
-        //thread_t *jobNew = prioriSelect();
-        //return jobNew;
+        thread_t *jobNew = prioSelect();
+        return jobNew;
     }
     return NULL;
 }
@@ -126,6 +129,26 @@ void addToRunning(thread_t *aux){
   }
 }
 
+//
+// Seleciona a thread com maior prioridade na fila de threads com estado ready
+thread_t* prioSelect(){
+
+    thread_t* selected = managerTh.ready.first;
+    int maxPrio = selected->prio;
+
+    printf("%d\n", maxPrio);
+
+    while(selected->next != NULL){
+        printf("%d\n", selected->prio);
+        selected = selected->next;
+    }
+
+    return selected;
+}
+
+
+
+
 
 // thread_t *prioriSelect(){
 //
@@ -149,24 +172,24 @@ void addToRunning(thread_t *aux){
 
 
 
-void addToTerminated(thread_t *aux){
-  aux->state = terminated;
-  qtdThreads--;
-
-  if(managerTh.terminated.first == NULL){
-      managerTh.terminated.first = aux;
-      managerTh.terminated.first->next = NULL;
-    }else if(managerTh.terminated.last == NULL){
-      managerTh.terminated.first->next = aux;
-      managerTh.terminated.last = aux;
-      managerTh.terminated.last->next = NULL;
-    }else{
-      managerTh.terminated.last->next = aux;
-      managerTh.terminated.last = aux;
-      managerTh.terminated.last->next = NULL;
-    }
-
-}
+// void addToTerminated(thread_t *aux){
+//   aux->state = terminated;
+//   qtdThreads--;
+//
+//   if(managerTh.terminated.first == NULL){
+//       managerTh.terminated.first = aux;
+//       managerTh.terminated.first->next = NULL;
+//     }else if(managerTh.terminated.last == NULL){
+//       managerTh.terminated.first->next = aux;
+//       managerTh.terminated.last = aux;
+//       managerTh.terminated.last->next = NULL;
+//     }else{
+//       managerTh.terminated.last->next = aux;
+//       managerTh.terminated.last = aux;
+//       managerTh.terminated.last->next = NULL;
+//     }
+//
+// }
 
 // int timer_signal(int timer_type) {
 //   int sig;
@@ -289,7 +312,7 @@ tid_t spawn(void (*start)()){
   novaTarefa->tid = maxID;
 
   // TODO Prioridade - usar o valor do contexto resto por 10 ou 100
-  novaTarefa->priori = 1;
+  novaTarefa->prio = (unsigned long int)(&novaTarefa->ctx)%10;
 
   // unindo o contexto criado a funcao passada por parametro
   makecontext(&novaTarefa->ctx, start, 0);
@@ -324,11 +347,11 @@ void yield(){
 // Daqui para baixo escalonamento preemptivo
 
 void  done(){
-  thread_t *aux = managerTh.running;
-  addToTerminated(aux);
-
-  thread_t *jobNew = getFromReady();
-  addToRunning(jobNew);
+  // thread_t *aux = managerTh.running;
+  // addToTerminated(aux);
+  //
+  // thread_t *jobNew = getFromReady();
+  // addToRunning(jobNew);
 
 }
 
