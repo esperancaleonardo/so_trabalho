@@ -120,14 +120,32 @@ void magic_numbers() {
 }
 
 void test1(){
+    int i=0;
+
+    while(i<180000000){
+        i++;
+    }
+
     printf("--Teste1\n");
     yield();
 }
 void test2(){
+    int i=0;
+
+    while(i<270000000){
+        i++;
+    }
+
     printf("----Teste2\n");
     yield();
 }
 void test3(){
+    int i=0;
+
+    while(i<360000000){
+        i++;
+    }
+
     printf("------Teste3\n");
     yield();
 }
@@ -145,10 +163,15 @@ int main(){
   // modeAl     0 == FCFS 1 == prioridade
 
   init(0); // Initialization init(int _modeAl)
+  spawn(&test1);
+  spawn(&test2);
   spawn(&test3);
   spawn(&test2);
   spawn(&test1);
   spawn(&test3);
+  spawn(&test3);
+  spawn(&test3);
+  spawn(&test2);
 
   start();
 }
