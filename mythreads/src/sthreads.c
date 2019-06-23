@@ -231,6 +231,8 @@ int  init(int _modeAl){
 }
 
 //Criar tarefa e coloca na fila de prontos
+
+
 tid_t spawn(void (*start)()){
 
   thread_t *novaTarefa = malloc(sizeof(thread_t));
@@ -253,7 +255,7 @@ tid_t spawn(void (*start)()){
 
   makecontext(&novaTarefa->ctx, start, 0);
 
-//adicionar na fila de prontos
+  //adicionar na fila de prontos
   addToReady(novaTarefa);
 
   printf("Contexto criado: %lu\n",(unsigned long int)&novaTarefa->ctx);
