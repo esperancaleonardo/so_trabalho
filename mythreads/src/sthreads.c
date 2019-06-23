@@ -221,7 +221,7 @@ void start(){
 
 }
 
-int  init(int _modeAl, int _modeSc){
+int  init(int _modeAl){
   struct threadList block =  {NULL, {NULL, NULL}, {NULL, NULL}};
   //Timer Slicer set
   //set_timer(TIMER_TYPE, timer_handler, TIMEOUT);
