@@ -150,21 +150,24 @@ void test3(){
 ********************************************************************************/
 
 
-int main(){
+int main(int argc, char *argv[]){
   puts("\n==== Test program for the Simple Threads API ====\n");
 
   // modeAl     0 == FCFS 1 == prioridade
+  init(atoi(argv[1])); // Initialization init(int _modeAl)
 
-  init(0); // Initialization init(int _modeAl)
   spawn(&test1);
   spawn(&test2);
   spawn(&test3);
+
+  spawn(&test1);
+  spawn(&test2);
+  spawn(&test3);
+
+  spawn(&test3);
   spawn(&test2);
   spawn(&test1);
-  spawn(&test3);
-  spawn(&test3);
-  spawn(&test3);
-  spawn(&test2);
+
 
   start();
 }
