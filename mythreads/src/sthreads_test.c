@@ -18,7 +18,7 @@ void numbers() {
   while (true) {
     printf(" n = %d\n", n);
     n = (n + 1) % (INT_MAX);
-    if (n > 2000) done();
+    //if (n > 2000) done();
     yield();
   }
 }
@@ -123,24 +123,39 @@ void magic_numbers() {
 
 void test1(){
     int i=0;
-    while(i<180000000){i++;}
+    while(i<180000000){i++;
+    if(i==90000000){
+        printf("------Teste1-Y\n");
+        yield();
+    }
+    }
 
     printf("--Teste1\n");
-    yield();
+    //yield();
 }
 void test2(){
     int i=0;
-    while(i<270000000){i++;}
+    while(i<270000000){i++;
+    if(i==90000000){
+        printf("------Teste2-Y\n");
+        yield();
+    }
+    }
 
     printf("----Teste2\n");
-    yield();
+    //yield();
 }
 void test3(){
     int i=0;
-    while(i<360000000){i++;}
+    while(i<360000000){i++;
+    if(i==90000000){
+        printf("------Teste3-Y\n");
+        yield();
+    }
+    }
 
     printf("------Teste3\n");
-    yield();
+    //yield();
 }
 
 /*******************************************************************************
@@ -156,18 +171,18 @@ int main(int argc, char *argv[]){
   // modeAl     0 == FCFS 1 == prioridade
   init(atoi(argv[1])); // Initialization init(int _modeAl)
 
-  spawn(&test1);
-  spawn(&test2);
-  spawn(&test3);
+  //spawn(&numbers);
+  //spawn(&magic_numbers);
 
   spawn(&test1);
   spawn(&test2);
   spawn(&test3);
-
-  spawn(&test3);
-  spawn(&test2);
   spawn(&test1);
+  spawn(&test2);
+  spawn(&test3);
+  //
 
+  printReadyPrio();
 
   start();
 }

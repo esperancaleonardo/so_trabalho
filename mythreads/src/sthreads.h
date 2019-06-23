@@ -87,4 +87,6 @@ void  done();
 */
 tid_t join();
 
+void printReadyPrio();
+
 #endif
