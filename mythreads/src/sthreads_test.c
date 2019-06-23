@@ -119,6 +119,19 @@ void magic_numbers() {
   }
 }
 
+void test1(){
+    printf("--Teste1\n");
+    yield();
+}
+void test2(){
+    printf("----Teste2\n");
+    yield();
+}
+void test3(){
+    printf("------Teste3\n");
+    yield();
+}
+
 /*******************************************************************************
                                      main()
 
@@ -129,11 +142,13 @@ void magic_numbers() {
 int main(){
   puts("\n==== Test program for the Simple Threads API ====\n");
 
-  init(0, 0); // Initialization
-  spawn(&numbers);
-  spawn(&magic_numbers);
-  spawn(&fibonacci_fast);
-  spawn(&letters);
+  // modeAl     0 == FCFS 1 == prioridade
+
+  init(0); // Initialization init(int _modeAl)
+  spawn(&test3);
+  spawn(&test2);
+  spawn(&test1);
+  spawn(&test3);
 
   start();
 }

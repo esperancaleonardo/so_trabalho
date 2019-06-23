@@ -47,7 +47,6 @@ struct threadList managerTh;
 int qtdThreads = 0;
 int maxID = 0;
 
-int modeSc = 0; //0 == cooperativo, 1 == preemptivo
 int modeAl = 0; //0 == FCFS 1 == prioridade
 
 
@@ -81,7 +80,7 @@ void addToReady(thread_t *aux){
 
 }
 thread_t *prioriSelect(){
-  
+
   struct threadList tempManager;
   tempManager = managerTh;
   thread_t *temp;
@@ -101,14 +100,14 @@ thread_t *prioriSelect(){
 }
 //Funcao responsavel por retirar tarefa da fila de prontos de acordo com o algoritmo referenciado
 thread_t *getFromReady(){
-  if(modeSc == 0){
+
     if(modeAl == 0){ //FCFS
       if(managerTh.ready.first == NULL){
         return NULL; // Fila de prontos vazia
       }else{
         thread_t *jobNew = managerTh.ready.first;
         managerTh.ready.first = managerTh.ready.first->next;
-        return jobNew; 
+        return jobNew;
       }
 
     }else{ //Prioridade
@@ -116,14 +115,13 @@ thread_t *getFromReady(){
         return jobNew;
     }
 
-  }
-  return NULL;  
+    return NULL;
 }
 
 //Funcao faz a troca de contexto
 void addToRunning(thread_t *aux){
-  
-  if(aux != NULL){ 
+
+  if(aux != NULL){
     aux->state = running;
     thread_t *temp = managerTh.running;
     managerTh.running = aux;
@@ -187,7 +185,7 @@ int timer_signal(int timer_type) {
 
    handler: timer signal handler.
 
-   ms: time in ms for the timer. 
+   ms: time in ms for the timer.
 
  */
 void set_timer(int type, void (*handler) (int), int ms) {
@@ -230,18 +228,17 @@ void start(){
 
 }
 
-int  init(int mode1, int mode2){
+int  init(int _modeAl, int _modeSc){
   struct threadList block =  {NULL, {NULL, NULL}, {NULL, NULL}};
   //Timer Slicer set
   set_timer(TIMER_TYPE, timer_handler, TIMEOUT);
   managerTh = block;
-  modeAl = mode1;
-  modeSc = mode2;
+  modeAl = _modeAl;
   return 1;
 }
 
-//Criar tarefa e coloca na fila de prontos 
-tid_t spawn(void (*start)()){    
+//Criar tarefa e coloca na fila de prontos
+tid_t spawn(void (*start)()){
 
   thread_t *novaTarefa = malloc(sizeof(thread_t));
   qtdThreads++; //Incrementa o contador de threads
@@ -260,13 +257,13 @@ tid_t spawn(void (*start)()){
   novaTarefa->ctx.uc_stack.ss_sp    = stack;
   novaTarefa->ctx.uc_stack.ss_size  = STACK_SIZE;
   novaTarefa->ctx.uc_stack.ss_flags = 0;
-  
+
   makecontext(&novaTarefa->ctx, start, 0);
 
 //adicionar na fila de prontos
   addToReady(novaTarefa);
 
-  printf("%lu : \n",(unsigned long int)&novaTarefa->ctx);
+  printf("Contexto criado: %lu\n",(unsigned long int)&novaTarefa->ctx);
   return -1;
 }
 
@@ -280,13 +277,13 @@ void yield(){
       addToRunning(jobNew); //Faz o dispath para modo run
     }
   }
-  printf(" Qtd thread: %d", qtdThreads);
+  printf("Qtd thread: %d\n", qtdThreads);
 }
 
 void  done(){
   thread_t *aux = managerTh.running;
-  addToTerminated(aux); 
-   
+  addToTerminated(aux);
+
   thread_t *jobNew = getFromReady();
   addToRunning(jobNew);
 
