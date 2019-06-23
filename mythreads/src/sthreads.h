@@ -26,6 +26,7 @@ typedef struct thread thread_t;
 */
 struct thread {
   tid_t tid;
+  int priori;
   state_t state;
   ucontext_t ctx;
   thread_t *next; /* can use this to create a linked list of threads */
@@ -38,7 +39,7 @@ struct thread {
 You may add or change arguments to the functions in the API. You may also add
 new functions to the API.
 ********************************************************************************/
-
+void start();
 
 /* Initialization
 

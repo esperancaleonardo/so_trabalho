@@ -18,7 +18,7 @@ void numbers() {
   while (true) {
     printf(" n = %d\n", n);
     n = (n + 1) % (INT_MAX);
-    if (n > 3) done();
+    if (n > 2000) done();
     yield();
   }
 }
@@ -129,5 +129,11 @@ void magic_numbers() {
 int main(){
   puts("\n==== Test program for the Simple Threads API ====\n");
 
-  init(); // Initialization
+  init(0, 0); // Initialization
+  spawn(&numbers);
+  spawn(&magic_numbers);
+  spawn(&fibonacci_fast);
+  spawn(&letters);
+
+  start();
 }
