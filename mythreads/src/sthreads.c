@@ -58,7 +58,7 @@ int modeAl = 0; //0 == FCFS 1 == prioridade
 void addToReady(thread_t *aux){
   aux->state = ready;
   //Modo Cooperativo
-  if(modeSc == 0){
+
     if(managerTh.ready.first == NULL){
       managerTh.ready.first = aux;
       managerTh.ready.first->next = NULL;
@@ -71,13 +71,6 @@ void addToReady(thread_t *aux){
       managerTh.ready.last = aux;
       managerTh.ready.last->next = NULL;
     }
-
-  }
-  //Modo preemptivo
-  else{
-
-  }
-
 }
 thread_t *prioriSelect(){
 
@@ -231,7 +224,7 @@ void start(){
 int  init(int _modeAl, int _modeSc){
   struct threadList block =  {NULL, {NULL, NULL}, {NULL, NULL}};
   //Timer Slicer set
-  set_timer(TIMER_TYPE, timer_handler, TIMEOUT);
+  //set_timer(TIMER_TYPE, timer_handler, TIMEOUT);
   managerTh = block;
   modeAl = _modeAl;
   return 1;
@@ -277,8 +270,12 @@ void yield(){
       addToRunning(jobNew); //Faz o dispath para modo run
     }
   }
-  printf("Qtd thread: %d\n", qtdThreads);
+  printf("Qtd contextos: %d\n", qtdThreads);
 }
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
 
 void  done(){
   thread_t *aux = managerTh.running;
