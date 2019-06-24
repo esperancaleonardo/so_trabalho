@@ -183,21 +183,24 @@ int main(int argc, char *argv[]){
   // //
 
   printReadyPrio();
-  printReadyPrioRev();
+  //printReadyPrioRev();
 
-  thread_t* sel = prioSelect();
-  printf("%d\n", sel->prio);
-  printReadyPrio();
-  sel = prioSelect();
-  printf("%d\n", sel->prio);
-  printReadyPrio();
+  // thread_t* sel = prioSelect();
+  // printReadyPrio();
+  // printf("%d\n", sel->prio);
+  //
+  // sel = prioSelect();
+  // printReadyPrio();
+  // printf("%d\n", sel->prio);
+  //
+  // sel = prioSelect();
+  // printReadyPrio();
+  // printf("%d\n", sel->prio);
+  //
+  // sel = prioSelect();
+  // printReadyPrio();
+  // printf("%d\n", sel->prio);
 
-  sel = prioSelect();
-  printf("%d\n", sel->prio);
-  printReadyPrio();
-  sel = prioSelect();
-  printf("%d\n", sel->prio);
-  printReadyPrio();
 
   //  start();
 }

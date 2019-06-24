@@ -77,14 +77,14 @@ void addToReady(thread_t *aux){
 
 
   }else if(managerTh.ready.first == managerTh.ready.last){ // caso um elemento na fila
-      printf("caso1elemento\n");
+      //printf("caso1elemento\n");
       managerTh.ready.first->next = aux;
       managerTh.ready.last = aux;
       managerTh.ready.last->next = NULL;
       managerTh.ready.last->prev = managerTh.ready.first;
   }else{
       thread_t* aux2;
-      printf("casogeral\n");
+      //printf("casogeral\n");
       managerTh.ready.last->next = aux;
       aux2 = managerTh.ready.last;
       managerTh.ready.last = aux;
@@ -178,7 +178,7 @@ thread_t* prioSelect(){
     int maxPrio = iter->prio;
     do{
 
-        if(iter->prio > maxPrio){
+        if(iter->prio >= maxPrio){
             maxPrio = iter->prio;
             selected = iter;
         }
@@ -188,22 +188,30 @@ thread_t* prioSelect(){
     printf("maxPrio Selected (first appear): %d\n", maxPrio);
 
     if(selected == managerTh.ready.first){
+        printf("F\n");
         managerTh.ready.first =  managerTh.ready.first->next;
+        managerTh.ready.first->prev = NULL;
     }
     else if(selected == managerTh.ready.last){
+        printf("L\n");
         managerTh.ready.last =  managerTh.ready.last->prev;
+        managerTh.ready.last->next = NULL;
     }
     else{
+        printf("M\n");
+        thread_t* aux = selected;
         selected->prev->next = selected->next;
+        aux->next->prev = aux->prev;
     }
     return selected;
 }
+
 
 // OK
 // Lista as prioridades na fila de prontos
 void printReadyPrio(){
     thread_t* aux = managerTh.ready.first;
-    printf("tamanho %d || ", managerTh.ready.tamanho);
+    printf("Tamanho %d || ", managerTh.ready.tamanho);
 
     int count = 0;
     do{
@@ -217,7 +225,7 @@ void printReadyPrio(){
 
 void printReadyPrioRev(){
     thread_t* aux = managerTh.ready.last;
-    printf("tamanho %d || ", managerTh.ready.tamanho);
+    printf("Tamanho %d || ", managerTh.ready.tamanho);
 
     int count = 0;
     do{
