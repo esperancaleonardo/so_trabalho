@@ -26,10 +26,11 @@ typedef struct thread thread_t;
 */
 struct thread {
   tid_t tid;
-  int priori;
+  int prio;
   state_t state;
   ucontext_t ctx;
-  thread_t *next; /* can use this to create a linked list of threads */
+  thread_t* next; /* can use this to create a linked list of threads */
+  thread_t* prev;
 };
 
 
@@ -56,7 +57,7 @@ int init();
    start - a function with zero arguments returning void.
 
    On success the positive thread ID of the new thread is returned. On failure a
-   negative value is returned. 
+   negative value is returned.
 */
 tid_t spawn(void (*start)());
 
@@ -86,5 +87,21 @@ void  done();
    terminated thread.
 */
 tid_t join();
+
+void printReadyPrio();
+
+void printReadyPrioRev();
+
+thread_t* prioSelect();
+
+thread_t* prioSelectRev();
+
+void addToReady(thread_t *aux);
+
+thread_t* getFromReady();
+
+void addToRunning(thread_t *aux);
+
+
 
 #endif

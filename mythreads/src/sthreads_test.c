@@ -18,8 +18,12 @@ void numbers() {
   while (true) {
     printf(" n = %d\n", n);
     n = (n + 1) % (INT_MAX);
-    if (n > 2000) done();
-    yield();
+    if (n == 300) {
+        //join();    //Commented out in order to test timer.
+    }
+ 
+   yield();
+   
   }
 }
 
@@ -30,9 +34,10 @@ void letters() {
 
   while (true) {
       printf(" c = %c\n", c);
-      if (c == 'f') done();
-      yield();
+      if(c == 'f') done();
+     
       c = (c == 'z') ? 'a' : c + 1;
+       yield();
     }
 }
 
@@ -67,8 +72,9 @@ void fibonacci_slow() {
       // Restart on overflow.
       n = 0;
     }
-    printf(" fib(%02d) = %d\n", n, fib(n));
+    printf("sfib(%02d) = %d\n", n, fib(n));
     n = (n + 1) % INT_MAX;
+    join();
   }
 }
 
@@ -85,7 +91,7 @@ void fibonacci_fast() {
   int next = a + b;
 
   while(true) {
-    printf(" fib(%02d) = %d\n", n, a);
+    printf(" ffib(%02d) = %d\n", n, a);
     next = a + b;
     a = b;
     b = next;
@@ -96,6 +102,7 @@ void fibonacci_fast() {
       b = 1;
       n = 0;
     }
+    yield();
   }
 }
 
@@ -107,6 +114,7 @@ void magic_numbers() {
   int n = 3;
   int m;
   while (true) {
+
     m = (n*(n*n+1)/2);
     if (m > 0) {
       printf(" magic(%d) = %d\n", n, m);
@@ -117,30 +125,44 @@ void magic_numbers() {
     }
     yield();
   }
+  //yield();      //commented out this line in order to test a double nonyielding main.
 }
 
 //-----------------------------------------------------------------------------------------------
 
 void test1(){
     int i=0;
-    while(i<180000000){i++;}
+    while(i<180000000){i++;
+    if(i==90000000){
+        printf("------Teste1-Y\n");
+        yield();
+    }
+    }
 
     printf("--Teste1\n");
-    yield();
+
 }
 void test2(){
     int i=0;
-    while(i<270000000){i++;}
+    while(i<270000000){i++;
+    if(i==90000000){
+        printf("------Teste2-Y\n");
+        yield();
+    }
+    }
 
     printf("----Teste2\n");
-    yield();
 }
 void test3(){
     int i=0;
-    while(i<360000000){i++;}
+    while(i<360000000){i++;
+    if(i==90000000){
+        printf("------Teste3-Y\n");
+        yield();
+    }
+    }
 
     printf("------Teste3\n");
-    yield();
 }
 
 /*******************************************************************************
@@ -150,21 +172,18 @@ void test3(){
 ********************************************************************************/
 
 
-int main(){
+int main(int argc, char *argv[]){
   puts("\n==== Test program for the Simple Threads API ====\n");
 
-  // modeAl     0 == FCFS 1 == prioridade
+  // modeAl     0 == FCFS 1 == prioridade 2 == prioridade reverse
+  //TimeOut x
+  init(atoi(argv[1]), atoi(argv[2])); // Initialization init(int _modeAl, int Time)
 
-  init(0); // Initialization init(int _modeAl)
-  spawn(&test1);
-  spawn(&test2);
-  spawn(&test3);
-  spawn(&test2);
-  spawn(&test1);
-  spawn(&test3);
-  spawn(&test3);
-  spawn(&test3);
-  spawn(&test2);
+  spawn(&magic_numbers);
+  spawn(&numbers);
+  spawn(&fibonacci_fast);
+  spawn(&letters);
+
 
   start();
 }
