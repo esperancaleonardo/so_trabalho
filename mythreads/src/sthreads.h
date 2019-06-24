@@ -29,7 +29,8 @@ struct thread {
   int prio;
   state_t state;
   ucontext_t ctx;
-  thread_t *next; /* can use this to create a linked list of threads */
+  thread_t* next; /* can use this to create a linked list of threads */
+  thread_t* prev;
 };
 
 
@@ -88,5 +89,12 @@ void  done();
 tid_t join();
 
 void printReadyPrio();
+void printReadyPrioRev();
+thread_t* prioSelect();
+void addToReady(thread_t *aux);
+thread_t* getFromReady();
+void addToRunning(thread_t *aux);
+
+
 
 #endif

@@ -69,31 +69,31 @@ void addToReady(thread_t *aux){
 
   if(managerTh.ready.first == NULL){        // caso fila de prontos vazia
       managerTh.ready.first = aux;
-      managerTh.ready.first->next = aux;
-      managerTh.ready.last = managerTh.ready.first;
-      managerTh.ready.last->next = managerTh.ready.first;
+      managerTh.ready.first->next = NULL;
+      managerTh.ready.first->prev = NULL;
+      managerTh.ready.last = aux;
+      managerTh.ready.last->next = NULL;
+      managerTh.ready.first->prev = NULL;
 
-  }else if(managerTh.ready.first->next == NULL){ // caso um elemento na fila
+
+  }else if(managerTh.ready.first == managerTh.ready.last){ // caso um elemento na fila
+      printf("caso1elemento\n");
       managerTh.ready.first->next = aux;
       managerTh.ready.last = aux;
-      managerTh.ready.last->next = managerTh.ready.first;
+      managerTh.ready.last->next = NULL;
+      managerTh.ready.last->prev = managerTh.ready.first;
   }else{
+      thread_t* aux2;
+      printf("casogeral\n");
       managerTh.ready.last->next = aux;
+      aux2 = managerTh.ready.last;
       managerTh.ready.last = aux;
-      managerTh.ready.last->next = managerTh.ready.first;
+      managerTh.ready.last->next = NULL;
+       managerTh.ready.last->prev = aux2;
   }
 
   managerTh.ready.tamanho++;
 
-  // else if(managerTh.ready.last == NULL){   // caso um elemento apenas
-  //     managerTh.ready.first->next = aux;
-  //     managerTh.ready.last = aux;
-  //     managerTh.ready.last->next = NULL;
-  // }else{                                    // caso generico
-  //     managerTh.ready.last->next = aux;
-  //     managerTh.ready.last = aux;
-  //     managerTh.ready.last->next = NULL;
-  // }
 }
 
 // OK
@@ -109,10 +109,15 @@ thread_t* getFromReady(){
         // da fila para o proximo elemento
         thread_t *selecionado = managerTh.ready.first;
         managerTh.ready.first = managerTh.ready.first->next;
+        managerTh.ready.first->prev = NULL;
         managerTh.ready.tamanho--;
         if(managerTh.ready.tamanho == 0){
             managerTh.ready.first = NULL;
+            managerTh.ready.first->next = NULL;
+            managerTh.ready.first->prev = NULL;
             managerTh.ready.last = NULL;
+            managerTh.ready.last->next = NULL;
+            managerTh.ready.last->prev = NULL;
         }
         return selecionado;
       }
@@ -125,12 +130,13 @@ thread_t* getFromReady(){
             return jobNew;
         }
         else{
+            thread_t *jobNew = managerTh.ready.first;
             managerTh.ready.tamanho--;
             if(managerTh.ready.tamanho == 0){
                 managerTh.ready.first = NULL;
                 managerTh.ready.last = NULL;
             }
-            return managerTh.ready.first;
+            return jobNew;
         }
     }
     return NULL;
@@ -166,48 +172,30 @@ void addToRunning(thread_t *aux){
 // Seleciona a thread com maior prioridade na fila de threads com estado ready
 thread_t* prioSelect(){
 
-    thread_t* selected = managerTh.ready.first;
+    thread_t* selected;
     thread_t* iter  = managerTh.ready.first;
-    thread_t* preIter = managerTh.ready.last;
-    thread_t* preSelected = managerTh.ready.last;
 
     int maxPrio = iter->prio;
-    int count = 1;
-
-    //printf("thread %d : / Prio: %d\n", count, maxPrio);
-
     do{
-        //printf("nao nulo\n");
-        if(iter->prio >= maxPrio){
-            //printf("eh maior\n");
-            preSelected = preIter;
+
+        if(iter->prio > maxPrio){
+            maxPrio = iter->prio;
             selected = iter;
-            maxPrio = selected->prio;
-            //printf("atualizei\n");
         }
-        count++;
-        //printf("thread %d : / Prio: %d\n", count, iter->prio);
-        preIter = iter;
         iter = iter->next;
+    }while(iter != NULL);
 
-        //printf("fui pro proximo\n");
-
-    }while(count <= managerTh.ready.tamanho);
-
-    //printf("Tamanho: %d\n", managerTh.ready.tamanho);
-
-    //printf("maxPrio Selected (first appear): %d\n", maxPrio);
+    printf("maxPrio Selected (first appear): %d\n", maxPrio);
 
     if(selected == managerTh.ready.first){
-        //printf("FIRST\n");
-         preSelected->next = selected->next;
-         managerTh.ready.first = selected->next;
-         managerTh.ready.last->next = preSelected;
-    }else{
-        //printf("N FIRST\n");
-        preSelected->next = selected->next;
+        managerTh.ready.first =  managerTh.ready.first->next;
     }
-
+    else if(selected == managerTh.ready.last){
+        managerTh.ready.last =  managerTh.ready.last->prev;
+    }
+    else{
+        selected->prev->next = selected->next;
+    }
     return selected;
 }
 
@@ -215,15 +203,30 @@ thread_t* prioSelect(){
 // Lista as prioridades na fila de prontos
 void printReadyPrio(){
     thread_t* aux = managerTh.ready.first;
+    printf("tamanho %d || ", managerTh.ready.tamanho);
+
     int count = 0;
     do{
         printf("%d ", aux->prio);
         aux = aux->next;
         count++;
-    }while(count < managerTh.ready.tamanho);
+    }while(aux != NULL);
     printf("\n");
 }
 
+
+void printReadyPrioRev(){
+    thread_t* aux = managerTh.ready.last;
+    printf("tamanho %d || ", managerTh.ready.tamanho);
+
+    int count = 0;
+    do{
+        printf("%d ", aux->prio);
+        aux = aux->prev;
+        count++;
+    }while(aux != NULL);
+    printf("\n");
+}
 
 
 
@@ -319,6 +322,7 @@ void printReadyPrio(){
 void start(){
   thread_t *temp = getFromReady();
   addToRunning(temp);
+  printReadyPrio();
   //printf("%lu : \n",(unsigned long int)&temp->ctx);
   //puts("i should not print");
 }
@@ -371,6 +375,7 @@ tid_t spawn(void (*start)()){
   // TODO Prioridade - usar o valor do contexto resto por 10 ou 100
   novaTarefa->prio = (unsigned long int)(&novaTarefa->ctx)%100;
   novaTarefa->next = NULL;
+  novaTarefa->prev = NULL;
   novaTarefa->state = ready;
 
   // unindo o contexto criado a funcao passada por parametro
@@ -390,13 +395,13 @@ tid_t spawn(void (*start)()){
 void yield(){
   if(qtdThreads > 1){                           //Verifica de tem alguma tarefa na fila de pronto aguardando sua vez
     if(managerTh.ready.first != NULL){
-      if (modeAl == 0) {
         thread_t *jobExec = managerTh.running;      // Copia a tarefa que esta em execucao
         addToReady(jobExec);                        // Insere a tarefa no fim da fila de prontos
-      }
-      printReadyPrio();
-      thread_t *jobNew = getFromReady();        // Pega a nova tarefa no início da fila de prontos
-      addToRunning(jobNew);                     // Faz o dispatch para a execucao da tarefa
+
+        printReadyPrio();
+        thread_t *jobNew = getFromReady();        // Pega a nova tarefa no início da fila de prontos
+        addToRunning(jobNew);                     // Faz o dispatch para a execucao da tarefa
+        printReadyPrio();
     }
   }
 

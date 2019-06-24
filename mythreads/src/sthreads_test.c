@@ -17,9 +17,9 @@ void numbers() {
   int n = 0;
   while (true) {
     printf(" n = %d\n", n);
-    n = (n + 1) % (INT_MAX);
+    n = (n + 1) % (5);
     //if (n > 2000) done();
-    yield();
+    if(n == 2) yield();
   }
 }
 
@@ -30,9 +30,9 @@ void letters() {
 
   while (true) {
       printf(" c = %c\n", c);
-      if (c == 'f') done();
-      yield();
-      c = (c == 'z') ? 'a' : c + 1;
+      //if (c == 'f') done();
+      if(c == 'b') yield();
+      c = (c == 'd') ? 'a' : c + 1;
     }
 }
 
@@ -131,7 +131,7 @@ void test1(){
     }
 
     printf("--Teste1\n");
-    //yield();
+
 }
 void test2(){
     int i=0;
@@ -143,7 +143,6 @@ void test2(){
     }
 
     printf("----Teste2\n");
-    //yield();
 }
 void test3(){
     int i=0;
@@ -155,7 +154,6 @@ void test3(){
     }
 
     printf("------Teste3\n");
-    //yield();
 }
 
 /*******************************************************************************
@@ -171,8 +169,10 @@ int main(int argc, char *argv[]){
   // modeAl     0 == FCFS 1 == prioridade
   init(atoi(argv[1])); // Initialization init(int _modeAl)
 
-  //spawn(&numbers);
-  //spawn(&magic_numbers);
+  // spawn(&numbers);
+  // spawn(&letters);
+  // spawn(&numbers);
+  // spawn(&letters);
 
   spawn(&test1);
   spawn(&test2);
@@ -180,9 +180,24 @@ int main(int argc, char *argv[]){
   spawn(&test1);
   spawn(&test2);
   spawn(&test3);
-  //
+  // //
 
   printReadyPrio();
+  printReadyPrioRev();
 
-  start();
+  thread_t* sel = prioSelect();
+  printf("%d\n", sel->prio);
+  printReadyPrio();
+  sel = prioSelect();
+  printf("%d\n", sel->prio);
+  printReadyPrio();
+
+  sel = prioSelect();
+  printf("%d\n", sel->prio);
+  printReadyPrio();
+  sel = prioSelect();
+  printf("%d\n", sel->prio);
+  printReadyPrio();
+
+  //  start();
 }
