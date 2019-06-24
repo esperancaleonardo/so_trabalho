@@ -131,6 +131,7 @@ void test1(){
     }
 
     printf("--Teste1\n");
+    yield();
 
 }
 void test2(){
@@ -143,6 +144,8 @@ void test2(){
     }
 
     printf("----Teste2\n");
+    yield();
+
 }
 void test3(){
     int i=0;
@@ -154,6 +157,8 @@ void test3(){
     }
 
     printf("------Teste3\n");
+    yield();
+
 }
 
 /*******************************************************************************
@@ -169,17 +174,17 @@ int main(int argc, char *argv[]){
   // modeAl     0 == FCFS 1 == prioridade
   init(atoi(argv[1])); // Initialization init(int _modeAl)
 
-  // spawn(&numbers);
-  // spawn(&letters);
+  spawn(&numbers);
+  spawn(&letters);
   // spawn(&numbers);
   // spawn(&letters);
 
-  spawn(&test1);
-  spawn(&test2);
-  spawn(&test3);
-  spawn(&test1);
-  spawn(&test2);
-  spawn(&test3);
+  // spawn(&test1);
+  // spawn(&test2);
+  // spawn(&test3);
+  // spawn(&test1);
+  // spawn(&test2);
+  // spawn(&test3);
   // //
 
   printReadyPrio();
@@ -202,5 +207,5 @@ int main(int argc, char *argv[]){
   // printf("%d\n", sel->prio);
 
 
-  //  start();
+  start();
 }

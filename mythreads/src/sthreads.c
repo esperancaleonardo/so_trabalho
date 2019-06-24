@@ -63,35 +63,32 @@ thread_t* prioSelect();
 
 // OK
 // insercao do ponteiro para thread *aux em uma lista
-// encadeada funcionando como uma fila
+// duplamente encadeada funcionando como uma fila
 void addToReady(thread_t *aux){
   aux->state = ready;
 
-  if(managerTh.ready.first == NULL){        // caso fila de prontos vazia
+  if(managerTh.ready.first == NULL){                        //caso fila de prontos vazia
       managerTh.ready.first = aux;
       managerTh.ready.first->next = NULL;
       managerTh.ready.first->prev = NULL;
       managerTh.ready.last = aux;
       managerTh.ready.last->next = NULL;
       managerTh.ready.first->prev = NULL;
-
-
-  }else if(managerTh.ready.first == managerTh.ready.last){ // caso um elemento na fila
-      //printf("caso1elemento\n");
+  }else if(managerTh.ready.first == managerTh.ready.last){ //caso um elemento na fila
       managerTh.ready.first->next = aux;
       managerTh.ready.last = aux;
       managerTh.ready.last->next = NULL;
       managerTh.ready.last->prev = managerTh.ready.first;
-  }else{
+  }else{                                                    // caso geral
       thread_t* aux2;
-      //printf("casogeral\n");
       managerTh.ready.last->next = aux;
       aux2 = managerTh.ready.last;
       managerTh.ready.last = aux;
       managerTh.ready.last->next = NULL;
-       managerTh.ready.last->prev = aux2;
+      managerTh.ready.last->prev = aux2;
   }
 
+  //incrementa o tamanho da fila de prontos
   managerTh.ready.tamanho++;
 
 }
@@ -105,13 +102,13 @@ thread_t* getFromReady(){
       if(managerTh.ready.first == NULL){
         return NULL; // Fila de prontos vazia
       }else{
-        // pega o primeiro elementoda fila de prontos e atualiza o comeco
+        // pega o primeiro elementoda fila de prontos e atualiza o começo
         // da fila para o proximo elemento
         thread_t *selecionado = managerTh.ready.first;
         managerTh.ready.first = managerTh.ready.first->next;
         managerTh.ready.first->prev = NULL;
-        managerTh.ready.tamanho--;
-        if(managerTh.ready.tamanho == 0){
+        managerTh.ready.tamanho--;  //decrementa o tamanho da fila
+        if(managerTh.ready.tamanho == 0){ //atualiza os ponteiros caso a fila fique vazia
             managerTh.ready.first = NULL;
             managerTh.ready.first->next = NULL;
             managerTh.ready.first->prev = NULL;
@@ -124,19 +121,19 @@ thread_t* getFromReady(){
 
     }else{ //Prioridade
         if(qtdThreads > 1){
-            thread_t *jobNew = prioSelect();
-            managerTh.ready.tamanho--;
+            thread_t *selecionado = prioSelect(); //seleciona a maior prioridade
+            managerTh.ready.tamanho--; //decrementa o tamanho da fila
 
-            return jobNew;
+            return selecionado;
         }
         else{
-            thread_t *jobNew = managerTh.ready.first;
-            managerTh.ready.tamanho--;
-            if(managerTh.ready.tamanho == 0){
+            thread_t *selecionado = managerTh.ready.first;
+            managerTh.ready.tamanho--; //decrementa o tamanho da fila
+            if(managerTh.ready.tamanho == 0){ //atualiza os ponteiros caso a fila fique vazia
                 managerTh.ready.first = NULL;
                 managerTh.ready.last = NULL;
             }
-            return jobNew;
+            return selecionado;
         }
     }
     return NULL;
@@ -146,7 +143,7 @@ thread_t* getFromReady(){
 // OK
 // funcao que realiza a troca de contexto entre as threads,
 // trocando o contexto da thread em execucao pelo contexto
-// da thread aux recebida como parametro
+// aux recebida como parametro
 void addToRunning(thread_t *aux){
 
   if(aux != NULL){
@@ -168,15 +165,15 @@ void addToRunning(thread_t *aux){
   }
 }
 
-//
-// Seleciona a thread com maior prioridade na fila de threads com estado ready
+//OK
+// Seleciona o contexto com maior prioridade na fila
 thread_t* prioSelect(){
 
     thread_t* selected;
     thread_t* iter  = managerTh.ready.first;
 
     int maxPrio = iter->prio;
-    do{
+    do{ //itera entre os contextos e seleciona o maior em Selected
 
         if(iter->prio >= maxPrio){
             maxPrio = iter->prio;
@@ -187,6 +184,9 @@ thread_t* prioSelect(){
 
     printf("maxPrio Selected (first appear): %d\n", maxPrio);
 
+
+    //remove o contexto da lista duplamente encadeada
+    //atualizando os ponteiros prev e next
     if(selected == managerTh.ready.first){
         printf("F\n");
         managerTh.ready.first =  managerTh.ready.first->next;
@@ -223,6 +223,8 @@ void printReadyPrio(){
 }
 
 
+// OK
+// Lista as prioridades na fila de prontos em ordem reversa
 void printReadyPrioRev(){
     thread_t* aux = managerTh.ready.last;
     printf("Tamanho %d || ", managerTh.ready.tamanho);
@@ -335,6 +337,8 @@ void start(){
   //puts("i should not print");
 }
 
+
+
 // OK
 // inicializacao da estrutura gerenciadora de Threads
 //
@@ -380,13 +384,12 @@ tid_t spawn(void (*start)()){
   //setando thread_id e prioridade
   novaTarefa->tid = maxID;
 
-  // TODO Prioridade - usar o valor do contexto resto por 10 ou 100
   novaTarefa->prio = (unsigned long int)(&novaTarefa->ctx)%100;
   novaTarefa->next = NULL;
   novaTarefa->prev = NULL;
   novaTarefa->state = ready;
 
-  // unindo o contexto criado a funcao passada por parametro
+  // unindo o contexto criado a função passada por parâmetro
   makecontext(&novaTarefa->ctx, start, 0);
 
   //adicionar na fila de prontos
@@ -401,19 +404,14 @@ tid_t spawn(void (*start)()){
 // OK
 // realiza o escalonamento coooperativo quando eh chamada
 void yield(){
-  if(qtdThreads > 1){                           //Verifica de tem alguma tarefa na fila de pronto aguardando sua vez
     if(managerTh.ready.first != NULL){
         thread_t *jobExec = managerTh.running;      // Copia a tarefa que esta em execucao
         addToReady(jobExec);                        // Insere a tarefa no fim da fila de prontos
-
-        printReadyPrio();
+        //printReadyPrio();
         thread_t *jobNew = getFromReady();        // Pega a nova tarefa no início da fila de prontos
         addToRunning(jobNew);                     // Faz o dispatch para a execucao da tarefa
         printReadyPrio();
     }
-  }
-
-  //printf("Qtd threads: %d\n", qtdThreads);
 }
 
 
