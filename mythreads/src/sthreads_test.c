@@ -125,39 +125,33 @@ void test1(){
     int i=0;
     while(i<180000000){i++;
     if(i==90000000){
-        printf("------Teste1-Y\n");
         yield();
     }
     }
 
     printf("--Teste1\n");
-    yield();
 
 }
 void test2(){
     int i=0;
     while(i<270000000){i++;
     if(i==90000000){
-        printf("------Teste2-Y\n");
         yield();
     }
     }
 
     printf("----Teste2\n");
-    yield();
 
 }
 void test3(){
     int i=0;
     while(i<360000000){i++;
     if(i==90000000){
-        printf("------Teste3-Y\n");
         yield();
     }
     }
 
     printf("------Teste3\n");
-    yield();
 
 }
 
@@ -174,20 +168,24 @@ int main(int argc, char *argv[]){
   // modeAl     0 == FCFS 1 == prioridade
   init(atoi(argv[1])); // Initialization init(int _modeAl)
 
-  spawn(&numbers);
-  spawn(&letters);
+  // spawn(&numbers);
+  // spawn(&letters);
+  // spawn(&numbers);
+  // spawn(&letters);
+  // spawn(&numbers);
+  // spawn(&letters);
   // spawn(&numbers);
   // spawn(&letters);
 
-  // spawn(&test1);
-  // spawn(&test2);
-  // spawn(&test3);
+  spawn(&test1);
+  spawn(&test2);
+  spawn(&test3);
   // spawn(&test1);
   // spawn(&test2);
   // spawn(&test3);
   // //
 
-  printReadyPrio();
+  //printReadyPrio();
   //printReadyPrioRev();
 
   // thread_t* sel = prioSelect();

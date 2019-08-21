@@ -42,6 +42,7 @@ struct threadList {
   thread_t *running;
 
   queue ready;
+  queue waiting;
   queue terminated;
 };
 
@@ -332,7 +333,7 @@ void printReadyPrioRev(){
 void start(){
   thread_t *temp = getFromReady();
   addToRunning(temp);
-  printReadyPrio();
+ // printReadyPrio();
   //printf("%lu : \n",(unsigned long int)&temp->ctx);
   //puts("i should not print");
 }
@@ -410,7 +411,7 @@ void yield(){
         //printReadyPrio();
         thread_t *jobNew = getFromReady();        // Pega a nova tarefa no início da fila de prontos
         addToRunning(jobNew);                     // Faz o dispatch para a execucao da tarefa
-        printReadyPrio();
+    //    printReadyPrio();
     }
 }
 
